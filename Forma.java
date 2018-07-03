@@ -51,7 +51,7 @@ public class Forma extends Application {
     Label lblRodiklis = new Label("Įveskite rodiklį:");
     Label lblDaugiklis = new Label("Įveskite daugiklį:");
     Label lblMetai = new Label("Įveskite, keleriems metams norite draustis:");
-    Label lblPalukanos = new Label("Įveskite banko taikomą palūkanų normą:");
+    Label lblPalukanos = new Label("Įveskite palūkanų normą:");
     Label lblLytis = new Label("Pasirinkite lytį:");
 
     private ChoiceBox<String> funkcijos = new ChoiceBox<>();
@@ -73,6 +73,7 @@ public class Forma extends Application {
         });
 
         grizti.setOnAction((ActionEvent event1) -> {
+
             stage.close();
             start(new Stage());
         });
@@ -81,12 +82,17 @@ public class Forma extends Application {
 
         vyras.setToggleGroup(group);
         moteris.setToggleGroup(group);
+
+        alert.setOnCloseRequest((DialogEvent e) -> {
+            start(new Stage());
+        });
     }
 
 
     @Override
     public void start(Stage stage) {
-
+        isvalytiGridpane(gridPaneImokoms);
+        isvalytiGridpane(gridPaneIsmokai);
         initUI(stage, new GridPane());
     }
 
@@ -101,7 +107,6 @@ public class Forma extends Application {
         Button btn1 = new Button("Skaičiuoti išmoką");
         btn1.setOnAction((ActionEvent event) -> {
             skaiciuotiIsmoka();
-
             stage.close();
         });
 
@@ -328,6 +333,26 @@ public class Forma extends Application {
             }
         }
         gridPane.getChildren().removeAll(salinamiNode);
+    }
+
+    public void isvalytiGridpane(GridPane gridPane) {
+
+        for (int i = 0; i <= gridPane.getColumnCount(); i++) {
+            for (int j = 0; j <= gridPane.getRowCount(); j++) {
+                if (paimtiNodePagalIndeksus(j, i, gridPane) instanceof TextField) {
+                    TextField laikinas = (TextField) paimtiNodePagalIndeksus(j, i, gridPane);
+                    laikinas.setText("");
+                }
+                if (paimtiNodePagalIndeksus(j, i, gridPane) instanceof ChoiceBox){
+                    ChoiceBox laikinas = (ChoiceBox) paimtiNodePagalIndeksus(j, i, gridPane);
+                    laikinas.getSelectionModel().clearSelection();
+                }
+                if(paimtiNodePagalIndeksus(j, i, gridPane) instanceof RadioButton){
+                    RadioButton laikinas = (RadioButton) paimtiNodePagalIndeksus(j, i, gridPane);
+                    laikinas.setSelected(false);
+                }
+            }
+        }
     }
 
     public Node paimtiNodePagalIndeksus(int eilutesIndeksas, int stulpelioIndeksas, GridPane gridPane) {
